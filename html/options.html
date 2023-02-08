@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>設定</title>
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <script type="module" src="../js/bootstrap.min.js"></script>
+</head>
+
+<body>
+    <div class="container d-grid w-75 mx-auto my-4 gap-4">
+        <header>
+            <h3>アカウント設定</h3>
+        </header>
+        <div class="input-group">
+            <span class="input-group-text">https://</span>
+            <input type="text" class="form-control" id="url" placeholder="sonzaisinai.masutodon.no.domain.desu" />
+            <span class="input-group-text">/</span>
+            <button type="button" class="btn btn-primary" id="authorization">認証コードの取得</button>
+        </div>
+        <div class="input-group">
+            <input type="text" class="form-control" id="authorization-code" placeholder="認証コードを貼り付け" />
+            <button type="button" class="btn btn-primary" id="apply">アクセストークンの取得</button>
+        </div>
+        <hr class="my-4">
+        <h3 class="mt-4">拡張機能設定</h3>
+        <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" id="autoclose" checked>
+            <label class="form-check-label" for="autoclose">
+                投稿後に自動でウィンドウを閉じる
+            </label>
+        </div>
+        <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" id="direct">
+            <label class="form-check-label" for="direct">
+                バックグラウンドで投稿
+            </label>
+        </div>
+        <div class="row">
+            <div class="col-8">
+                <p>ボタンの文言</p>
+                <div class="input-group">
+                    <span class="input-group-text">twitter</span>
+                    <input type="text" class="form-control" id="button_tweet" placeholder="twitter.svg" />
+                </div>
+            </div>
+        </div>
+        <div class="row  align-items-center">
+            <div class="col-8">
+                <div class="input-group">
+                    <span class="input-group-text">mastodon</span>
+                    <input type="text" class="form-control" id="button_toot" placeholder="twistdon.svg" />
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="onebutton">
+                    <label class="form-check-label" for="onebutton">
+                        ボタンを統合
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="my-2">
+            <label class="form-check-label" for="visibility">
+                デフォルトの公開範囲
+            </label>
+            <select class="form-select" id="visibility">
+                <option value="public" selected>公開</option>
+                <option value="unlisted">未収載</option>
+                <option value="private">フォロワー限定</option>
+            </select>
+        </div>
+        <div class="form-check form-switch">
+            <label class="form-check-label" for="sensitive">
+                センシティブ設定を常にオン
+            </label>
+            <input class="form-check-input" type="checkbox" id="sensitive">
+        </div>
+        <div class="w-25 mx-auto d-grid">
+            <button type="button" class="btn btn-primary" id="save">設定を保存</button>
+        </div>
+    </div>
+    <div class="toast position-fixed ms-4 bottom-0 start-0 translate-middle-y bg-primary text-white" id="authToast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                アカウントの設定が完了しました
+            </div>
+            <button type="button" class="btn-close btn-close-white  me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+    <div class="toast position-fixed ms-4 bottom-0 start-0 translate-middle-y bg-primary text-white" id="settingToast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                拡張機能の設定を更新しました
+            </div>
+            <button type="button" class="btn-close btn-close-white  me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+    <script type="module" src="../js/options.js"></script>
+</body>
+</html>

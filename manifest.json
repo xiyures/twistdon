@@ -1,0 +1,28 @@
+{
+  "name": "twistdon",
+  "description": "twitterとmastodonに同時投稿して、移住するタイミングをそれとなく探ろう！",
+  "version": "1.0",
+  "manifest_version": 3,
+  "background": {
+    "service_worker": "/background.js",
+    "type":  "module"
+  },
+  "permissions": [ "storage", "scripting", "notifications" ],
+  "host_permissions": [
+    "https://twitter.com/*",
+    "https://mobile.twitter.com/*"
+  ],
+  "icons": {
+    "128": "/images/twist128.png"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [ "/images/twist.svg" ],
+      "matches": [
+        "https://twitter.com/*",
+        "https://mobile.twitter.com/*"
+      ]
+    }
+  ],
+  "options_page": "/html/options.html"
+}
