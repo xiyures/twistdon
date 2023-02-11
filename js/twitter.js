@@ -5,13 +5,14 @@ let setting;
 chrome.runtime.sendMessage({ "mode": 'fetch' }).then((response) => {
     setting = response.setting
     console.log("twistdon : 設定ロード完了")
+    console.log(setting)
 })
 
 function init() {
     // ツイート画面を召喚すると[id="layers"]の2番目の要素が生えてくるので、それを監視します
     const observedElement = document.getElementById("layers");
 
-    if (!observedElement) {
+    if (!observedElement || !setting) {
         setTimeout(init, 1000)
         return;
     }
@@ -69,10 +70,10 @@ function Button(button) {
         button.style.justifyContent = 'center'
         button.appendChild(icon)
     }
-    
+
     button.setAttribute('data-testid', 'tootButton')
     button.addEventListener('click', (event) => {
-        if (!event.currentTarget.ariaDisabled) { toot();  event.currentTarget.ariaDisabled = true; }
+        if (!event.currentTarget.ariaDisabled) { toot(); event.currentTarget.ariaDisabled = true; }
     });
     return button;
 }
@@ -85,7 +86,7 @@ function toot() {
     const node = getLayerRootNode()
     const toot = getToot(node)
     const media = getMedia(node)
-    chrome.runtime.sendMessage({ "mode" : 'toot', "toot": toot, "blobs": media })
+    chrome.runtime.sendMessage({ "mode": 'toot', "toot": toot, "blobs": media })
 }
 
 function getLayerRootNode() {

@@ -31,25 +31,23 @@ async function display() {
         document.getElementById("sensitive").value = option.sensitive
     });
 
-    document.getElementById("apply").addEventListener('click', () => {
+    document.getElementById("apply").addEventListener('click', async () => {
+        option.visibility = document.getElementById("visibility").value
+        option.sensitive = document.getElementById("sensitive").value
+
+        const progress = document.getElementById("progress")
+        progress.hidden = false
+        const bar = document.getElementById("bar")
         try {
-            option.visibility = document.getElementById("visibility").value
-            option.sensitive = document.getElementById("sensitive").value
-
-            const progress = document.getElementById("progress")
-            progress.hidden = false
-            const bar = document.getElementById("bar")
-
-            send(domain, token, document.getElementById("toot").value, files, option, (progress) => {
+            const res = await send(domain, token, document.getElementById("toot").value, files, option, (progress) => {
                 bar.style.width = progress + "%"
-            }).then((res) => {
-                if (option.autoclose) {
-                    window.close();
-                }
-                toast.show()
             })
+            if (option.autoclose) {
+                window.close();
+            }
+            toast.show()
         } catch (error) {
-            console.log(error)
+            console.error(error)
             alert("エラーが発生しました")
             return
         }

@@ -41,7 +41,6 @@ async function uploadToot(baseUrl, token, text, mediaIds, option) {
     }
     toot.visibility = option.visibility
     toot.sensitive = option.sensitive
-
     var res = await postStatus(baseUrl, token, toot)
     if (res.status != 200) {
         throw new Error("送信に失敗しました")

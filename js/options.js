@@ -22,6 +22,7 @@ elApplyButton.addEventListener("click", fetchToken);
 const toasts = {
     setting: new bootstrap.Toast(document.getElementById('settingToast'), { delay: 3000 }),
     auth: new bootstrap.Toast(document.getElementById('authToast'), { delay: 3000 }),
+    error: new bootstrap.Toast(document.getElementById('errorToast'), { delay: 3000 }),
 }
 
 const items = await chrome.storage.local.get(["Domain", "ClientId", "ClientSecret", "AuthCode", "Setting"])
@@ -130,9 +131,13 @@ function fetchToken(event) {
             ["ClientId"]: client_id,
             ["ClientSecret"]: client_secret,
             ["AuthCode"]: elCode.value
-        }).then(() =>
+        }).then(() => {
             toasts['auth'].show()
-        )
+        }
+        ).catch((error) => {
+            console.error(error)
+            toasts['error'].show()
+        })
     });
 }
 

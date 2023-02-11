@@ -23,55 +23,55 @@ function init() {
     })
 }
 
-chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener(async (msg, sender, sendResponse) => {
     switch (msg.mode) {
         case 'fetch':
-            getSetting().then((setting) => {
-                sendResponse({ setting: setting })
-            })
+            const setting = await getSetting()
+            sendResponse({ setting: setting })
             break;
 
         case 'toot':
-            chrome.storage.local.set({
-                ["Toot"]: msg.toot,
-                ["Blobs"]: msg.blobs,
-            });
-
-            chrome.storage.local.get(["AccessToken", "Domain", "Setting"]).then(async (items) => {
-                if (!items.Domain || !items.AccessToken) {
-                    chrome.runtime.openOptionsPage()
+            const items = await chrome.storage.local.get(["AccessToken", "Domain", "Setting"])
+            if (!items.Domain || !items.AccessToken) {
+                chrome.runtime.openOptionsPage()
+            } else {
+                if (!items.Setting.direct) {
+                    await chrome.storage.local.set({
+                        ["Toot"]: msg.toot,
+                        ["Blobs"]: msg.blobs,
+                    });
+                    chrome.windows.create({
+                        url: 'html/popup.html',
+                        type: 'popup',
+                    });
                 } else {
-                    if (!items.Setting.direct) {
-                        chrome.windows.create({
-                            url: 'html/popup.html',
-                            type: 'popup',
-                        });
-                    } else {
-                        url = "https://" + items.Domain
-                        const files = new Array()
-                        for (let blob of msg.blobs) {
-                            files.push(await fetch(blob).then(i => i.blob()))
-                        }
-                        try {
-                            const res = await send(items.Domain, items.AccessToken, msg.toot, files, {
-                                visibility: items.Setting.visibility, sensitive: items.Setting.sensitive
-                            })
-                            chrome.notifications.create(
-                                "twistdon-backgroundPostSuccess", {
-                                type: "basic", title: 'twistdon', message: "投稿しました", iconUrl: './images/twist_w.png', silent: true, buttons: [{ title: "開く" }]
-                            })
-                        } catch (error) {
-                            console.error(error)
-                            chrome.notifications.create(
-                                "twistdon-backgroundPostFailed", {
-                                type: "basic", title: 'twistdon', message: "投稿に失敗しました", iconUrl: './images/twist_w.png', silent: true
-                            })
-                        }
-
-
+                    chrome.notifications.create(
+                        "twistdon-backgroundPostFailed", {
+                        type: "basic", title: 'twistdon', message: "投稿中......", iconUrl: './images/twist_w.png', silent: true
+                    })
+                    const files = new Array()
+                    for (let blob of msg.blobs) {
+                        files.push(await fetch(blob).then(i => i.blob()))
                     }
+                    try {
+                        await send(items.Domain, items.AccessToken, msg.toot, files, {
+                            visibility: items.Setting.visibility, sensitive: items.Setting.sensitive
+                        })
+                        chrome.notifications.create(
+                            "twistdon-backgroundPostSuccess", {
+                            type: "basic", title: 'twistdon', message: "投稿しました", iconUrl: './images/twist_w.png', silent: true, buttons: [{ title: "開く" }]
+                        })
+                    } catch (error) {
+                        console.error(error)
+                        chrome.notifications.create(
+                            "twistdon-backgroundPostFailed", {
+                            type: "basic", title: 'twistdon', message: "投稿に失敗しました", iconUrl: './images/twist_w.png', silent: true
+                        })
+                    }
+
+
                 }
-            })
+            }
             break;
     }
     return true;
